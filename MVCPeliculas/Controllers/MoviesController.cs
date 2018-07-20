@@ -40,6 +40,7 @@ namespace MVCPeliculas.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        //Especifica que solo los campos indicados en el Include pueden ser usados en el modelo dentro del controlador
         public ActionResult Create([Bind(Include = "ID,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
         {
             if (ModelState.IsValid)
@@ -100,6 +101,7 @@ namespace MVCPeliculas.Controllers
 
         // POST: Movies/Delete/5
         [HttpPost, ActionName("Delete")]
+        //Implementa el cross site
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
@@ -112,28 +114,32 @@ namespace MVCPeliculas.Controllers
         public ActionResult Index(string movieGenre, string searchString)
         {
             var GenreLst = new List<string>();
-
+            //Obtiene todos los generos. Los datos solo se recuperan cuando se utilizan por primera vez
             var GenreQry = from d in db.Movies
                            orderby d.Genre
                            select d.Genre;
-
+            
+            //Añade en la lista los valores unicos
             GenreLst.AddRange(GenreQry.Distinct());
 
+            //Proporciona el valor a esta lista
             ViewBag.movieGenre = new SelectList(GenreLst);
 
+            //Recupera todas las peliculas
             var movies = from m in db.Movies
                          select m;
 
+            //Filtra las peliculas por titulo
             if (!String.IsNullOrEmpty(searchString))
             {
                 movies = movies.Where(s => s.Title.Contains(searchString));
             }
-
+            //y luego las filtra por genero
             if (!string.IsNullOrEmpty(movieGenre))
             {
                 movies = movies.Where(x => x.Genre == movieGenre);
             }
-
+            //Muestra la vista Index rellenando el modelo con la lista de peliculas
             return View(movies);
         }
 

@@ -6,15 +6,19 @@
 
 <h2>Edit</h2>
 
-
+<!--Declara un formulario. No especificamos ninguna acción para el post-->
 @using (Html.BeginForm())
 {
+    <!--Genera el token. Con esto nos aseguramos que solo peticiones que sepan este token seran aceptadas por el controlador
+        En el controlador tenemos que incluir la anotación-->
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
         <h4>Movie</h4>
         <hr />
+        <!--Resultado de la validación del modelo-->
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <!--Guarda en un campo oculto el ID-->
         @Html.HiddenFor(model => model.ID)
 
         <div class="form-group">
